@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Item from "./Item";
+import axios from 'axios';
 export default function PackingList({items, setItems, onDeleteItem, onPackedItem}){
 
     const [sortBy, setSortBy] = useState("input");
@@ -15,10 +16,19 @@ export default function PackingList({items, setItems, onDeleteItem, onPackedItem
     if(sortBy === "packed") sortedItems = items.slice().sort(
       (a,b) => Number(a.packed) - Number(b.packed)
     )
-    function handleDeleteList(){
-      const confirmed = window.confirm("Are you sure you want to delete all items?");
-      if(confirmed) setItems([])
+
+    async function handleDeleteList() {
+      try {
+        const confirmed = window.confirm("Are you sure you want to delete all items?");
+        if (confirmed) {
+          await axios.delete('http://127.0.0.1:8000/api/items');
+          setItems([]); // Clear items in the frontend state
+        }
+      } catch (error) {
+        console.error('Error deleting items:', error);
+      }
     }
+
     return (
       <div className="list">
         <ul>

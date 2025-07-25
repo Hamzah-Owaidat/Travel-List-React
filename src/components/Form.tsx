@@ -1,22 +1,40 @@
 import { useState } from "react";
+import axios from "axios";
 
-export default function Form({onAddItem}){
+export default function Form({ onAddItem }) {
+  const [description, setDescription] = useState("");
+  const [quantity, setQuantity] = useState(1);
 
-    const [description, setDescription] = useState("");
-    const [quantity, setQuantity] = useState(1);
-    
-  
-    function handleSubmit(e){
-      e.preventDefault();
-  
-      if(!description) return;
-  
-      const newItems = {description, quantity, id: Date.now(), packed: false};
-      console.log(newItems);
-      onAddItem(newItems);
+  async function handleSubmit(e) {
+    e.preventDefault();
+    // console.log("Form submitted");
+
+    if (!description) return;
+
+    const newItem = { description, quantity, packed: false };
+    // console.log("New item:", newItem);
+
+    try {
+
+      // console.log("Sending request to:", 'http://127.0.0.1:8000/api/items');
+      // Send data to Laravel API
+      const response = await axios.post('http://127.0.0.1:8000/api/items', newItem);
+      // console.log("API response:", response.data);
+      // Assuming the API returns the saved item with an ID
+      const savedItem = response.data;
+      
+      onAddItem(savedItem);
       setDescription("");
       setQuantity(1);
+    } catch (error) {
+      console.error("Error adding item:", error);
+      // Log more details about the error
+      if (error.response) {
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
+      }
     }
+  }
   
     return (
       <form className="add-form" onSubmit={handleSubmit}> 
