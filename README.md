@@ -2,7 +2,6 @@
 
 A React-based application for creating and managing your travel packing list. Never forget essential items for your trip again!
 
-![Travel List App](https://github.com/Hamzah-Owaidat/travel-list/raw/main/screenshots/app-preview.png)
 
 ## 🌟 Features
 
